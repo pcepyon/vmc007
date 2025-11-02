@@ -43,7 +43,6 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
 yarn.lock
 .pnpm-debug.log*
 
@@ -127,6 +126,17 @@ celerybeat.pid
 
 # Railway
 .railway/
+
+# Development process files
+.dev/*.pid
+.dev/*.log
+
+# Playwright E2E Tests
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/blob-report/
+/playwright/.auth/
 
 # Test data (optional - uncomment if needed)
 # /docs/db/*.csv

@@ -258,9 +258,16 @@ button:disabled {
 .upload-section,
 .status-section {
   background-color: white;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   padding: 2rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.upload-section:hover,
+.status-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 }
 
 .status-header {
@@ -277,8 +284,14 @@ button:disabled {
 
 .file-item {
   padding: 1rem;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.file-item:hover {
+  border-color: #3B82F6;
+  background-color: #F9FAFB;
 }
 
 .file-status {
@@ -313,14 +326,17 @@ button:disabled {
 }
 
 .reset-button {
-  background-color: #3b82f6;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: white;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .reset-button:hover {
-  background-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive Design */
@@ -682,4 +698,145 @@ button:disabled {
 
 .font-semibold {
   font-weight: 600;
+}
+
+/* File Upload Form Styles */
+.file-upload-form {
+  width: 100%;
+}
+
+.file-upload-info {
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border-left: 4px solid #3B82F6;
+}
+
+.file-upload-info p {
+  margin: 0.5rem 0;
+  color: #1E40AF;
+}
+
+.file-sections {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .file-sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.file-section {
+  background-color: white;
+  border: 2px solid #E5E7EB;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.file-section:hover {
+  border-color: #3B82F6;
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+}
+
+.file-section h3 {
+  color: #1F2937;
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.file-input-wrapper {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.file-input-label {
+  display: inline-block;
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.file-input-label:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+}
+
+.file-input-wrapper input[type="file"] {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+}
+
+.file-info {
+  background-color: #F9FAFB;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #E5E7EB;
+}
+
+.file-name {
+  color: #1F2937;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.file-size {
+  color: #6B7280;
+  font-size: 0.875rem;
+}
+
+.file-error {
+  background-color: #FEE2E2;
+  color: #DC2626;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border-left: 4px solid #DC2626;
+  font-size: 0.875rem;
+}
+
+.upload-error {
+  background-color: #FEE2E2;
+  color: #DC2626;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  border-left: 4px solid #DC2626;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.upload-button {
+  width: 100%;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+}
+
+.upload-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.4);
+}
+
+.upload-button:disabled {
+  background: linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
 }

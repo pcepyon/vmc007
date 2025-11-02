@@ -185,13 +185,13 @@ class TestPublicationRepository:
         # Arrange
         df = pd.DataFrame([
             {
-                'publication_id': 'PUB001',
+                'paper_id': 'PUB001',
                 'department': '컴퓨터공학과',
                 'journal_tier': 'SCIE',
                 'impact_factor': 3.25
             },
             {
-                'publication_id': 'PUB002',
+                'paper_id': 'PUB002',
                 'department': '전자공학과',
                 'journal_tier': 'KCI',
                 'impact_factor': None  # NULL allowed
@@ -203,7 +203,7 @@ class TestPublicationRepository:
 
         # Assert
         assert Publication.objects.count() == 2
-        pub2 = Publication.objects.get(publication_id='PUB002')
+        pub2 = Publication.objects.get(paper_id='PUB002')
         assert pub2.impact_factor is None
 
 

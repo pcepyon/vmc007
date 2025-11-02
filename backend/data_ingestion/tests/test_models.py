@@ -169,14 +169,14 @@ class TestPublicationModel:
         """RED: Test creating a valid publication record."""
         # Arrange & Act
         pub = Publication.objects.create(
-            publication_id='PUB001',
+            paper_id='PUB001',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=3.25
         )
 
         # Assert
-        assert pub.publication_id == 'PUB001'
+        assert pub.paper_id == 'PUB001'
         assert pub.journal_tier == 'SCIE'
         assert pub.impact_factor == 3.25
 
@@ -184,7 +184,7 @@ class TestPublicationModel:
         """RED: Test that impact_factor can be NULL."""
         # Arrange & Act
         pub = Publication.objects.create(
-            publication_id='PUB002',
+            paper_id='PUB002',
             department='전자공학과',
             journal_tier='KCI',
             impact_factor=None  # Should be allowed
@@ -197,7 +197,7 @@ class TestPublicationModel:
         """RED: Test negative impact_factor is rejected."""
         # Arrange
         pub = Publication(
-            publication_id='PUB003',
+            paper_id='PUB003',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=-1.5  # Invalid

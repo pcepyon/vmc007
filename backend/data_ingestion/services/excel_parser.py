@@ -87,6 +87,18 @@ class ExcelParser:
                 f"집행금액 exceeds 총연구비 for IDs: {invalid_ids}"
             )
 
+        # Rename columns to match database schema
+        df = df.rename(columns={
+            '집행ID': 'execution_id',
+            '소속학과': 'department',
+            '총연구비': 'total_budget',
+            '집행일자': 'execution_date',
+            '집행금액': 'execution_amount'
+        })
+
+        # Select only required columns
+        df = df[['execution_id', 'department', 'total_budget', 'execution_date', 'execution_amount']]
+
         return df
 
     @staticmethod
@@ -127,9 +139,21 @@ class ExcelParser:
         # Convert: Data types
         df['학년'] = pd.to_numeric(df['학년'], errors='coerce')
 
-        # Validate: 학년 range (1-7 for 학사~박사)
-        if (df['학년'] < 1).any() or (df['학년'] > 7).any():
-            raise ValidationError("학년 must be between 1 and 7")
+        # Validate: 학년 range (0-7 for 학사~박사, 0 for graduate students without year)
+        if (df['학년'] < 0).any() or (df['학년'] > 7).any():
+            raise ValidationError("학년 must be between 0 and 7")
+
+        # Rename columns to match database schema
+        df = df.rename(columns={
+            '학번': 'student_id',
+            '학과': 'department',
+            '학년': 'grade',
+            '과정구분': 'program_type',
+            '학적상태': 'enrollment_status'
+        })
+
+        # Select only required columns
+        df = df[['student_id', 'department', 'grade', 'program_type', 'enrollment_status']]
 
         return df
 
@@ -157,29 +181,61 @@ class ExcelParser:
         Raises:
             ValidationError: If validation fails
         """
-        # Validation: Required columns
-        required_cols = ['평가년도', '학과', '졸업생 취업률(%)', '연간 기술이전 수입액(억원)']
-        missing_cols = set(required_cols) - set(df.columns)
-        if missing_cols:
-            raise ValidationError(f"Missing required columns: {missing_cols}")
+        # Validation: Required columns (support both formats with/without space)
+        # Actual CSV uses '졸업생 취업률 (%)' with space, '연간 기술이전 수입액 (억원)' with space
+        required_cols_map = {
+            '평가년도': '평가년도',
+            '학과': '학과',
+            '졸업생 취업률': ['졸업생 취업률 (%)', '졸업생 취업률(%)'],
+            '연간 기술이전 수입액': ['연간 기술이전 수입액 (억원)', '연간 기술이전 수입액(억원)']
+        }
+
+        # Normalize column names by finding the actual column name variant
+        employment_col = None
+        tech_transfer_col = None
+
+        for col in df.columns:
+            if '취업률' in col and ('(%)' in col or '(%)' in col):
+                employment_col = col
+            if '기술이전' in col and ('억원' in col):
+                tech_transfer_col = col
+
+        if employment_col is None or tech_transfer_col is None:
+            missing = []
+            if employment_col is None:
+                missing.append('졸업생 취업률 (%)')
+            if tech_transfer_col is None:
+                missing.append('연간 기술이전 수입액 (억원)')
+            raise ValidationError(f"Missing required columns: {set(missing)}")
 
         # Clean: Remove rows with missing critical data
         df = df.dropna(subset=['평가년도', '학과'])
 
         # Convert: Data types
         df['평가년도'] = pd.to_numeric(df['평가년도'], errors='coerce').astype(int)
-        df['졸업생 취업률(%)'] = pd.to_numeric(df['졸업생 취업률(%)'], errors='coerce')
-        df['연간 기술이전 수입액(억원)'] = pd.to_numeric(df['연간 기술이전 수입액(억원)'], errors='coerce')
+        df[employment_col] = pd.to_numeric(df[employment_col], errors='coerce')
+        df[tech_transfer_col] = pd.to_numeric(df[tech_transfer_col], errors='coerce')
 
         # Validate: 취업률 range (0-100%)
-        employment_rate = df['졸업생 취업률(%)']
+        employment_rate = df[employment_col]
         if (employment_rate < 0).any() or (employment_rate > 100).any():
-            raise ValidationError("졸업생 취업률(%) must be between 0 and 100")
+            raise ValidationError("졸업생 취업률 must be between 0 and 100")
 
         # Validate: Non-negative tech transfer revenue
-        tech_revenue = df['연간 기술이전 수입액(억원)']
+        tech_revenue = df[tech_transfer_col]
         if (tech_revenue < 0).any():
             raise ValidationError("연간 기술이전 수입액 cannot be negative")
+
+        # Rename columns to match database schema
+        df = df.rename(columns={
+            '평가년도': 'evaluation_year',
+            '학과': 'department',
+            employment_col: 'employment_rate',
+            tech_transfer_col: 'tech_transfer_income'
+        })
+
+        # Select only required columns
+        df = df[['evaluation_year', 'department', 'employment_rate', 'tech_transfer_income']]
 
         return df
 
@@ -228,5 +284,16 @@ class ExcelParser:
         if df['Impact Factor'].notna().any():
             if (df['Impact Factor'].dropna() < 0).any():
                 raise ValidationError("Impact Factor cannot be negative")
+
+        # Rename columns to match database schema
+        df = df.rename(columns={
+            '논문ID': 'paper_id',
+            '학과': 'department',
+            '저널등급': 'journal_tier',
+            'Impact Factor': 'impact_factor'
+        })
+
+        # Select only required columns
+        df = df[['paper_id', 'department', 'journal_tier', 'impact_factor']]
 
         return df

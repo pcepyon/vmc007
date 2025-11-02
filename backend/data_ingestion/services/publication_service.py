@@ -131,7 +131,7 @@ class PublicationService:
 
         # Aggregate by journal tier
         aggregated = queryset.values('journal_tier').annotate(
-            count=Count('publication_id'),
+            count=Count('paper_id'),
             avg_if=Avg('impact_factor', filter=Q(impact_factor__isnull=False))
         ).order_by('-count')  # Sort by count descending
 

@@ -36,19 +36,19 @@ class PublicationServiceTestCase(TestCase):
 
         # SCIE papers (3)
         Publication.objects.create(
-            publication_id='S1',
+            paper_id='S1',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=3.0
         )
         Publication.objects.create(
-            publication_id='S2',
+            paper_id='S2',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=4.0
         )
         Publication.objects.create(
-            publication_id='S3',
+            paper_id='S3',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=5.0
@@ -56,13 +56,13 @@ class PublicationServiceTestCase(TestCase):
 
         # KCI papers (2)
         Publication.objects.create(
-            publication_id='K1',
+            paper_id='K1',
             department='컴퓨터공학과',
             journal_tier='KCI',
             impact_factor=1.0
         )
         Publication.objects.create(
-            publication_id='K2',
+            paper_id='K2',
             department='컴퓨터공학과',
             journal_tier='KCI',
             impact_factor=1.5
@@ -139,7 +139,7 @@ class PublicationServiceTestCase(TestCase):
         """
         # Arrange: Add paper without IF
         Publication.objects.create(
-            publication_id='N1',
+            paper_id='N1',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=None
@@ -181,7 +181,7 @@ class PublicationServiceTestCase(TestCase):
         """
         # Arrange: Add paper from different department
         Publication.objects.create(
-            publication_id='E1',
+            paper_id='E1',
             department='전자공학과',
             journal_tier='SCIE',
             impact_factor=2.0
@@ -267,7 +267,7 @@ class PublicationServiceTestCase(TestCase):
         # Arrange: Keep only 1 paper
         Publication.objects.all().delete()
         Publication.objects.create(
-            publication_id='ONLY_ONE',
+            paper_id='ONLY_ONE',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=3.0

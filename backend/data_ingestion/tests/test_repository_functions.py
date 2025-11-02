@@ -209,7 +209,7 @@ class TestSavePublicationData:
         """Save publication data should insert records to database."""
         # Arrange
         df = pd.DataFrame({
-            'publication_id': ['P001', 'P002'],
+            'paper_id': ['P001', 'P002'],
             'department': ['컴퓨터공학과', '전자공학과'],
             'journal_tier': ['SCIE', 'KCI'],
             'impact_factor': [3.5, None]
@@ -223,18 +223,18 @@ class TestSavePublicationData:
         assert Publication.objects.count() == 2
 
         # Verify data
-        pub1 = Publication.objects.get(publication_id='P001')
+        pub1 = Publication.objects.get(paper_id='P001')
         assert pub1.journal_tier == 'SCIE'
         assert pub1.impact_factor == 3.5
 
-        pub2 = Publication.objects.get(publication_id='P002')
+        pub2 = Publication.objects.get(paper_id='P002')
         assert pub2.impact_factor is None
 
     def test_save_publication_handles_null_impact_factor(self):
         """Save should handle null/NaN impact factor values."""
         # Arrange
         df = pd.DataFrame({
-            'publication_id': ['P001', 'P002', 'P003'],
+            'paper_id': ['P001', 'P002', 'P003'],
             'department': ['컴퓨터공학과'] * 3,
             'journal_tier': ['SCIE', 'KCI', '기타'],
             'impact_factor': [3.5, pd.NA, None]
@@ -245,16 +245,16 @@ class TestSavePublicationData:
 
         # Assert
         assert result['rows_inserted'] == 3
-        pub1 = Publication.objects.get(publication_id='P001')
+        pub1 = Publication.objects.get(paper_id='P001')
         assert pub1.impact_factor == 3.5
 
-        pub2 = Publication.objects.get(publication_id='P002')
+        pub2 = Publication.objects.get(paper_id='P002')
         assert pub2.impact_factor is None
 
     def test_save_empty_publication_dataframe(self):
         """Save empty publication DataFrame should return 0."""
         # Arrange
-        df = pd.DataFrame(columns=['publication_id', 'department', 'journal_tier', 'impact_factor'])
+        df = pd.DataFrame(columns=['paper_id', 'department', 'journal_tier', 'impact_factor'])
 
         # Act
         result = save_publication_data(df, replace=True)
@@ -267,14 +267,14 @@ class TestSavePublicationData:
         """Save publications with replace=True should delete existing records."""
         # Arrange
         Publication.objects.create(
-            publication_id='OLD001',
+            paper_id='OLD001',
             department='기계공학과',
             journal_tier='SCIE',
             impact_factor=2.0
         )
 
         df = pd.DataFrame({
-            'publication_id': ['P001'],
+            'paper_id': ['P001'],
             'department': ['컴퓨터공학과'],
             'journal_tier': ['KCI'],
             'impact_factor': [None]
@@ -286,7 +286,7 @@ class TestSavePublicationData:
         # Assert
         assert result['rows_inserted'] == 1
         assert Publication.objects.count() == 1
-        assert not Publication.objects.filter(publication_id='OLD001').exists()
+        assert not Publication.objects.filter(paper_id='OLD001').exists()
 
 
 @pytest.mark.integration

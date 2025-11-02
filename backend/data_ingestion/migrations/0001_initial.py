@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Publication',
             fields=[
-                ('publication_id', models.CharField(max_length=100, primary_key=True, serialize=False, verbose_name='논문ID')),
+                ('paper_id', models.CharField(db_column='paper_id', max_length=100, primary_key=True, serialize=False, verbose_name='논문ID')),
                 ('department', models.CharField(max_length=100, verbose_name='학과')),
                 ('journal_tier', models.CharField(choices=[('SCIE', 'SCIE'), ('KCI', 'KCI'), ('기타', '기타')], max_length=20, verbose_name='저널등급')),
                 ('impact_factor', models.FloatField(blank=True, null=True, validators=[django.core.validators.MinValueValidator(0)], verbose_name='Impact Factor')),
@@ -68,7 +68,7 @@ class Migration(migrations.Migration):
                 ('evaluation_year', models.IntegerField(validators=[django.core.validators.MinValueValidator(2000)], verbose_name='평가년도')),
                 ('department', models.CharField(max_length=100, verbose_name='학과')),
                 ('employment_rate', models.FloatField(validators=[django.core.validators.MinValueValidator(0), django.core.validators.MaxValueValidator(100)], verbose_name='졸업생 취업률(%)')),
-                ('tech_transfer_revenue', models.FloatField(validators=[django.core.validators.MinValueValidator(0)], verbose_name='연간 기술이전 수입액(억원)')),
+                ('tech_transfer_revenue', models.FloatField(db_column='tech_transfer_income', validators=[django.core.validators.MinValueValidator(0)], verbose_name='연간 기술이전 수입액(억원)')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
             ],

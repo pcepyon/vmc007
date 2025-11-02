@@ -259,14 +259,14 @@ class TestPublicationEntity:
         """Valid SCIE publication creation should succeed."""
         # Act
         pub = Publication(
-            publication_id='P001',
+            paper_id='P001',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=3.5
         )
 
         # Assert
-        assert pub.publication_id == 'P001'
+        assert pub.paper_id == 'P001'
         assert pub.journal_tier == 'SCIE'
         assert pub.impact_factor == 3.5
 
@@ -274,7 +274,7 @@ class TestPublicationEntity:
         """Valid KCI publication creation should succeed."""
         # Act
         pub = Publication(
-            publication_id='P002',
+            paper_id='P002',
             department='전자공학과',
             journal_tier='KCI',
             impact_factor=None
@@ -288,7 +288,7 @@ class TestPublicationEntity:
         """Valid '기타' publication creation should succeed."""
         # Act
         pub = Publication(
-            publication_id='P003',
+            paper_id='P003',
             department='기계공학과',
             journal_tier='기타',
             impact_factor=None
@@ -302,7 +302,7 @@ class TestPublicationEntity:
         # Act & Assert
         with pytest.raises(ValueError, match="Invalid journal tier"):
             Publication(
-                publication_id='P001',
+                paper_id='P001',
                 department='컴퓨터공학과',
                 journal_tier='SSCI',  # Invalid
                 impact_factor=2.0
@@ -313,7 +313,7 @@ class TestPublicationEntity:
         # Act & Assert
         with pytest.raises(ValueError, match="Impact factor cannot be negative"):
             Publication(
-                publication_id='P001',
+                paper_id='P001',
                 department='컴퓨터공학과',
                 journal_tier='SCIE',
                 impact_factor=-1.5
@@ -323,7 +323,7 @@ class TestPublicationEntity:
         """Zero impact factor should be allowed."""
         # Act
         pub = Publication(
-            publication_id='P001',
+            paper_id='P001',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=0.0
@@ -336,7 +336,7 @@ class TestPublicationEntity:
         """None impact factor should be allowed."""
         # Act
         pub = Publication(
-            publication_id='P001',
+            paper_id='P001',
             department='컴퓨터공학과',
             journal_tier='KCI',
             impact_factor=None
@@ -350,7 +350,7 @@ class TestPublicationEntity:
         # Act & Assert
         for tier in ['SCIE', 'KCI', '기타']:
             pub = Publication(
-                publication_id='P001',
+                paper_id='P001',
                 department='컴퓨터공학과',
                 journal_tier=tier,
                 impact_factor=None

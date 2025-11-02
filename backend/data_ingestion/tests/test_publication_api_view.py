@@ -36,13 +36,13 @@ class PublicationAPIViewTestCase(TestCase):
 
         # Computer Science - SCIE
         Publication.objects.create(
-            publication_id='CS_P1',
+            paper_id='CS_P1',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=3.5
         )
         Publication.objects.create(
-            publication_id='CS_P2',
+            paper_id='CS_P2',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=4.0
@@ -50,7 +50,7 @@ class PublicationAPIViewTestCase(TestCase):
 
         # Computer Science - KCI
         Publication.objects.create(
-            publication_id='CS_P3',
+            paper_id='CS_P3',
             department='컴퓨터공학과',
             journal_tier='KCI',
             impact_factor=1.2
@@ -58,7 +58,7 @@ class PublicationAPIViewTestCase(TestCase):
 
         # Electronics - SCIE
         Publication.objects.create(
-            publication_id='EE_P1',
+            paper_id='EE_P1',
             department='전자공학과',
             journal_tier='SCIE',
             impact_factor=2.0
@@ -304,7 +304,7 @@ class PublicationAPIViewTestCase(TestCase):
         """
         # Arrange: Add paper without IF
         Publication.objects.create(
-            publication_id='NO_IF',
+            paper_id='NO_IF',
             department='컴퓨터공학과',
             journal_tier='SCIE',
             impact_factor=None

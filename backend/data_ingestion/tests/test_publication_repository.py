@@ -37,7 +37,7 @@ class PublicationRepositoryTestCase(TestCase):
         # Computer Science dept - SCIE papers
         for i in range(5):
             Publication.objects.create(
-                publication_id=f'CS_SCIE_{i}',
+                paper_id=f'CS_SCIE_{i}',
                 department='컴퓨터공학과',
                 journal_tier='SCIE',
                 impact_factor=3.0 + i * 0.5
@@ -46,7 +46,7 @@ class PublicationRepositoryTestCase(TestCase):
         # Computer Science dept - KCI papers
         for i in range(3):
             Publication.objects.create(
-                publication_id=f'CS_KCI_{i}',
+                paper_id=f'CS_KCI_{i}',
                 department='컴퓨터공학과',
                 journal_tier='KCI',
                 impact_factor=1.0 + i * 0.2
@@ -54,13 +54,13 @@ class PublicationRepositoryTestCase(TestCase):
 
         # Electronics dept - SCIE papers
         Publication.objects.create(
-            publication_id='EE_SCIE_1',
+            paper_id='EE_SCIE_1',
             department='전자공학과',
             journal_tier='SCIE',
             impact_factor=2.5
         )
         Publication.objects.create(
-            publication_id='EE_SCIE_2',
+            paper_id='EE_SCIE_2',
             department='전자공학과',
             journal_tier='SCIE',
             impact_factor=2.8
@@ -68,7 +68,7 @@ class PublicationRepositoryTestCase(TestCase):
 
         # Mechanical dept - KCI paper (no IF)
         Publication.objects.create(
-            publication_id='ME_KCI_1',
+            paper_id='ME_KCI_1',
             department='기계공학과',
             journal_tier='KCI',
             impact_factor=None

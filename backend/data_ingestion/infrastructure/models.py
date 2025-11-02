@@ -75,7 +75,7 @@ class Student(models.Model):
         verbose_name='학과'
     )
     grade = models.IntegerField(
-        validators=[MinValueValidator(1), MaxValueValidator(4)],
+        validators=[MinValueValidator(0), MaxValueValidator(7)],
         verbose_name='학년'
     )
     program_type = models.CharField(
@@ -114,9 +114,10 @@ class Publication(models.Model):
         ('기타', '기타'),
     ]
 
-    publication_id = models.CharField(
+    paper_id = models.CharField(
         max_length=100,
         primary_key=True,
+        db_column='paper_id',
         verbose_name='논문ID'
     )
     department = models.CharField(
@@ -146,7 +147,7 @@ class Publication(models.Model):
         verbose_name_plural = 'Publications'
 
     def __str__(self):
-        return f"{self.publication_id} - {self.department}"
+        return f"{self.paper_id} - {self.department}"
 
 
 class DepartmentKPI(models.Model):
@@ -168,6 +169,7 @@ class DepartmentKPI(models.Model):
         verbose_name='졸업생 취업률(%)'
     )
     tech_transfer_revenue = models.FloatField(
+        db_column='tech_transfer_income',
         validators=[MinValueValidator(0)],
         verbose_name='연간 기술이전 수입액(억원)'
     )

@@ -108,7 +108,7 @@ def save_publication_data(dataframe: pd.DataFrame, replace: bool = True) -> Dict
 
         records = [
             Publication(
-                publication_id=row['publication_id'],
+                paper_id=row['paper_id'],
                 department=row['department'],
                 journal_tier=row['journal_tier'],
                 impact_factor=row['impact_factor'] if pd.notna(row['impact_factor']) else None
@@ -148,7 +148,7 @@ def save_department_kpi_data(dataframe: pd.DataFrame, replace: bool = True) -> D
                 evaluation_year=int(row['evaluation_year']),
                 department=row['department'],
                 employment_rate=float(row['employment_rate']),
-                tech_transfer_revenue=float(row['tech_transfer_revenue'])
+                tech_transfer_revenue=float(row['tech_transfer_income'])
             )
             for _, row in dataframe.iterrows()
         ]

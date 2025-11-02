@@ -41,8 +41,8 @@ class Student:
 
     def __post_init__(self):
         """Validate business rules."""
-        if self.grade < 1 or self.grade > 4:
-            raise ValueError("Grade must be between 1 and 4")
+        if self.grade < 0 or self.grade > 7:
+            raise ValueError("Grade must be between 0 and 7")
         if self.program_type not in self.VALID_PROGRAM_TYPES:
             raise ValueError(f"Invalid program type: {self.program_type}")
         if self.enrollment_status not in self.VALID_ENROLLMENT_STATUSES:
@@ -52,7 +52,7 @@ class Student:
 @dataclass
 class Publication:
     """Publication record entity."""
-    publication_id: str
+    paper_id: str
     department: str
     journal_tier: str  # SCIE/KCI/기타
     impact_factor: Optional[float]
@@ -73,7 +73,7 @@ class DepartmentKPI:
     evaluation_year: int
     department: str
     employment_rate: float  # Percentage (0-100)
-    tech_transfer_revenue: float  # In 억원
+    tech_transfer_income: float  # In 억원
 
     def __post_init__(self):
         """Validate business rules."""
@@ -81,5 +81,5 @@ class DepartmentKPI:
             raise ValueError("Evaluation year must be >= 2000")
         if self.employment_rate < 0 or self.employment_rate > 100:
             raise ValueError("Employment rate must be between 0 and 100")
-        if self.tech_transfer_revenue < 0:
-            raise ValueError("Tech transfer revenue cannot be negative")
+        if self.tech_transfer_income < 0:
+            raise ValueError("Tech transfer income cannot be negative")

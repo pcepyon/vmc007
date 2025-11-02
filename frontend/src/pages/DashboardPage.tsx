@@ -17,13 +17,20 @@ import {
   PublicationData,
   DepartmentKpiData,
 } from '../types/domain';
+import {
+  getResearchFundingData,
+  getStudentData,
+  getPublicationData,
+  getDepartmentKPIData,
+  getFilterOptions,
+} from '../api/dataApiClient';
 
 export const DashboardPage: React.FC = () => {
   // Filter state
   const [filters, setFilters] = useState<DashboardFilters>({
     department: 'all',
     year: 'latest',
-    period: '1y',
+    period: 'latest',
     studentStatus: 'all',
     journalTier: 'all',
   });
@@ -31,14 +38,16 @@ export const DashboardPage: React.FC = () => {
   const [filterOptions] = useState<FilterOptions>({
     departments: ['전체', '컴퓨터공학과', '전자공학과', '기계공학과'],
     years: ['최근 1년', '최근 3년', '2024년', '2023년', '2022년'],
-    periods: ['1y', '3y'],
+    periods: ['latest', '1year', '3years'],
   });
 
-  // Data state (mock data for MVP)
-  const [researchFundingData] = useState<ResearchFundingData | null>(null);
-  const [studentData] = useState<StudentData | null>(null);
-  const [publicationData] = useState<PublicationData | null>(null);
-  const [departmentKpiData] = useState<DepartmentKpiData | null>(null);
+  // Data state
+  const [researchFundingData, setResearchFundingData] = useState<ResearchFundingData | null>(null);
+  const [studentData, setStudentData] = useState<StudentData | null>(null);
+  const [publicationData, setPublicationData] = useState<PublicationData | null>(null);
+  const [departmentKpiData, setDepartmentKpiData] = useState<DepartmentKpiData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
   const handleFilterChange = (key: keyof DashboardFilters, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -48,15 +57,53 @@ export const DashboardPage: React.FC = () => {
     setFilters({
       department: 'all',
       year: 'latest',
-      period: '1y',
+      period: 'latest',
       studentStatus: 'all',
       journalTier: 'all',
     });
   };
 
   useEffect(() => {
-    // TODO: Fetch dashboard data with filters
-    // This will be implemented with actual API calls
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch all dashboard data in parallel
+        const [researchFunding, students, publications, kpi] = await Promise.all([
+          getResearchFundingData({
+            department: filters.department,
+            year: filters.year,
+            period: filters.period,
+          }),
+          getStudentData({
+            department: filters.department,
+            status: filters.studentStatus,
+          }),
+          getPublicationData({
+            department: filters.department,
+            tier: filters.journalTier,
+          }),
+          getDepartmentKPIData({
+            department: filters.department,
+            year: filters.year,
+          }),
+        ]);
+
+        // Update state with fetched data
+        setResearchFundingData(researchFunding?.data || null);
+        setStudentData(students || null);
+        setPublicationData(publications || null);
+        setDepartmentKpiData(kpi || null);
+      } catch (err) {
+        console.error('Failed to fetch dashboard data:', err);
+        setError(err as Error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
   }, [filters]);
 
   return (
@@ -72,7 +119,7 @@ export const DashboardPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="lg:col-span-2">
-          <ResearchFundingChart data={researchFundingData} loading={false} error={null} />
+          <ResearchFundingChart data={researchFundingData} loading={loading} error={error} />
         </div>
 
         <div>
@@ -82,15 +129,15 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <div>
-          <StudentChart data={studentData} loading={false} error={null} />
+          <StudentChart data={studentData} loading={loading} error={error} />
         </div>
 
         <div>
-          <PublicationChart data={publicationData} loading={false} error={null} />
+          <PublicationChart data={publicationData} loading={loading} error={error} />
         </div>
 
         <div>
-          <DepartmentKPIChart data={departmentKpiData} loading={false} error={null} />
+          <DepartmentKPIChart data={departmentKpiData} loading={loading} error={error} />
         </div>
       </div>
     </div>

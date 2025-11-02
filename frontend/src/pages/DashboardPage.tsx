@@ -22,7 +22,6 @@ import {
   getStudentData,
   getPublicationData,
   getDepartmentKPIData,
-  getFilterOptions,
 } from '../api/dataApiClient';
 
 export const DashboardPage: React.FC = () => {

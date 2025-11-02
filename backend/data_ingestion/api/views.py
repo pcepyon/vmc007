@@ -618,3 +618,25 @@ class FilterOptionsView(viewsets.ViewSet):
         }
 
         return Response(filter_options, status=status.HTTP_200_OK)
+
+
+class HealthCheckView(viewsets.ViewSet):
+    """
+    Health check and configuration diagnostic endpoint.
+    No authentication required for health checks.
+    """
+    permission_classes = []
+
+    def list(self, request):
+        """
+        GET /api/health/
+        Returns server health status and CORS configuration.
+        """
+        health_data = {
+            'status': 'healthy',
+            'cors_allowed_origins': settings.CORS_ALLOWED_ORIGINS,
+            'frontend_url_env': os.environ.get('FRONTEND_URL', 'NOT_SET'),
+            'debug': settings.DEBUG,
+            'allowed_hosts': settings.ALLOWED_HOSTS,
+        }
+        return Response(health_data, status=status.HTTP_200_OK)

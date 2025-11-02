@@ -44,10 +44,27 @@ CORS_ALLOWED_ORIGINS_LIST = [
 # Add production frontend URL from environment variable
 FRONTEND_URL = os.environ.get('FRONTEND_URL')
 if FRONTEND_URL:
+    # Clean the URL (remove trailing slash if present)
+    FRONTEND_URL = FRONTEND_URL.rstrip('/')
     CORS_ALLOWED_ORIGINS_LIST.append(FRONTEND_URL)
+    print(f"[CORS] Added frontend URL: {FRONTEND_URL}")
+else:
+    print("[CORS] WARNING: FRONTEND_URL environment variable not set!")
+
+# Also check for multiple frontend URLs (comma-separated)
+ADDITIONAL_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', '')
+if ADDITIONAL_ORIGINS:
+    for origin in ADDITIONAL_ORIGINS.split(','):
+        origin = origin.strip().rstrip('/')
+        if origin:
+            CORS_ALLOWED_ORIGINS_LIST.append(origin)
+            print(f"[CORS] Added additional origin: {origin}")
 
 CORS_ALLOWED_ORIGINS = CORS_ALLOWED_ORIGINS_LIST
 CORS_ALLOW_CREDENTIALS = True
+
+# Print final CORS configuration for debugging
+print(f"[CORS] Final allowed origins: {CORS_ALLOWED_ORIGINS}")
 
 ROOT_URLCONF = 'data_ingestion.urls'
 

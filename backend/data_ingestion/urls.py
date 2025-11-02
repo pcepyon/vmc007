@@ -10,7 +10,8 @@ from data_ingestion.api.views import (
     StudentDashboardView,
     PublicationDashboardView,
     DepartmentKPIView,
-    FilterOptionsView
+    FilterOptionsView,
+    HealthCheckView
 )
 
 # DRF Router setup
@@ -19,6 +20,9 @@ router = DefaultRouter()
 # No router registration needed for custom routes
 
 urlpatterns = [
+    # Health check endpoint: GET /api/health/
+    path('api/health/', HealthCheckView.as_view({'get': 'list'}), name='health-check'),
+
     # Upload endpoint: POST /api/upload/
     path('api/upload/', UploadViewSet.as_view({'post': 'create'}), name='upload-files'),
 

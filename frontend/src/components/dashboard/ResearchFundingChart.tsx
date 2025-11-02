@@ -33,9 +33,8 @@ export const ResearchFundingChart: React.FC<ResearchFundingChartProps> = ({
     return (
       <div
         data-testid="loading-skeleton"
-        className="animate-pulse bg-gray-200 h-64 rounded"
+        className="skeleton-shimmer h-96 rounded-xl"
       >
-        Loading...
       </div>
     );
   }
@@ -68,35 +67,46 @@ export const ResearchFundingChart: React.FC<ResearchFundingChartProps> = ({
   }));
 
   return (
-    <div data-testid="research-funding-chart" className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold mb-4">연구비 집행 추이</h3>
+    <div data-testid="research-funding-chart" className="bg-white p-6 rounded-xl shadow-xl hover-scale">
+      <h3 className="text-lg font-semibold mb-4 text-gray-900">연구비 집행 추이</h3>
 
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.5} />
           <XAxis
             dataKey="month"
             label={{ value: '월', position: 'insideBottom', offset: -5 }}
+            tick={{ fontSize: 12 }}
           />
           <YAxis
             label={{ value: '금액 (억원)', angle: -90, position: 'insideLeft' }}
+            tick={{ fontSize: 12 }}
           />
-          <Tooltip />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#fff',
+              border: 'none',
+              borderRadius: '0.5rem',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+            }}
+          />
           <Legend />
           <Line
             type="monotone"
             dataKey="집행금액"
             stroke="#3B82F6"
-            strokeWidth={2}
-            dot={{ r: 4 }}
+            strokeWidth={3}
+            dot={{ r: 5, fill: '#3B82F6' }}
+            activeDot={{ r: 7 }}
             name="집행금액 (억원)"
           />
           <Line
             type="monotone"
             dataKey="잔액"
             stroke="#10B981"
-            strokeWidth={2}
-            dot={{ r: 4 }}
+            strokeWidth={3}
+            dot={{ r: 5, fill: '#10B981' }}
+            activeDot={{ r: 7 }}
             name="잔액 (억원)"
           />
         </LineChart>

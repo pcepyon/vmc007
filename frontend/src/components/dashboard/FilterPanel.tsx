@@ -30,8 +30,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow mb-6">
-      <h3 className="text-lg font-semibold mb-4">필터</h3>
+    <div className="bg-white p-6 rounded-xl shadow-xl mb-6">
+      <h3 className="text-lg font-semibold mb-4 text-gray-900">필터</h3>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
@@ -42,7 +42,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             id="department-filter"
             value={filters.department}
             onChange={(e) => onFilterChange('department', e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 hover-lift"
+            style={{transition: 'all 0.2s'}}
           >
             {filterOptions.departments.map((dept) => (
               <option key={dept} value={dept}>
@@ -60,7 +61,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
             id="year-filter"
             value={filters.year}
             onChange={(e) => onFilterChange('year', e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2"
+            className="w-full border border-gray-300 rounded-md px-3 py-2 hover-lift"
+            style={{transition: 'all 0.2s'}}
           >
             {filterOptions.years.map((year) => (
               <option key={year} value={year}>
@@ -73,7 +75,7 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
         <div className="flex items-end">
           <button
             onClick={onReset}
-            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-md"
+            className="w-full bg-gradient-blue text-white font-medium py-2 px-4 rounded-md hover-lift"
           >
             필터 초기화
           </button>

@@ -16,15 +16,14 @@ export const ResearchFundingMetricCard: React.FC<ResearchFundingMetricCardProps>
 }) => {
   if (loading) {
     return (
-      <div data-testid="metric-loading" className="animate-pulse bg-gray-200 h-24 rounded">
-        Loading...
+      <div data-testid="metric-loading" className="skeleton-shimmer h-32 rounded-xl">
       </div>
     );
   }
 
   if (currentBalance === null) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow text-center text-gray-400">
+      <div className="bg-white p-6 rounded-xl shadow text-center text-gray-400">
         데이터 없음
       </div>
     );
@@ -33,11 +32,15 @@ export const ResearchFundingMetricCard: React.FC<ResearchFundingMetricCardProps>
   const balanceInEokWon = (currentBalance / 100000000).toFixed(1);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-sm font-medium text-gray-500">현재 연구비 잔액</h3>
-      <p className="mt-2 text-3xl font-semibold text-gray-900">
-        {balanceInEokWon} <span className="text-lg text-gray-600">억원</span>
+    <div className="bg-gradient-blue p-6 rounded-xl shadow-xl hover-lift">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-sm font-medium text-blue-100">현재 연구비 잔액</h3>
+        <span className="text-4xl" role="img" aria-label="money">💰</span>
+      </div>
+      <p className="mt-3 text-5xl font-bold text-white">
+        {balanceInEokWon}
       </p>
+      <p className="text-xl text-blue-50 mt-1">억원</p>
     </div>
   );
 };

@@ -25,8 +25,7 @@ interface StudentChartProps {
 export const StudentChart: React.FC<StudentChartProps> = ({ data, loading, error }) => {
   if (loading) {
     return (
-      <div data-testid="loading-skeleton" className="animate-pulse bg-gray-200 h-64 rounded">
-        Loading...
+      <div data-testid="loading-skeleton" className="skeleton-shimmer h-96 rounded-xl">
       </div>
     );
   }
@@ -49,18 +48,28 @@ export const StudentChart: React.FC<StudentChartProps> = ({ data, loading, error
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold mb-4">학생 현황</h3>
+    <div className="bg-white p-6 rounded-xl shadow-xl hover-scale">
+      <h3 className="text-lg font-semibold mb-4 text-gray-900">학생 현황</h3>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart data={data.by_department}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="department" />
-          <YAxis label={{ value: '학생 수', angle: -90, position: 'insideLeft' }} />
-          <Tooltip />
+          <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.5} />
+          <XAxis dataKey="department" tick={{ fontSize: 12 }} />
+          <YAxis
+            label={{ value: '학생 수', angle: -90, position: 'insideLeft' }}
+            tick={{ fontSize: 12 }}
+          />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#fff',
+              border: 'none',
+              borderRadius: '0.5rem',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+            }}
+          />
           <Legend />
-          <Bar dataKey="학사" stackId="a" fill="#3B82F6" name="학사" />
-          <Bar dataKey="석사" stackId="a" fill="#10B981" name="석사" />
-          <Bar dataKey="박사" stackId="a" fill="#F59E0B" name="박사" />
+          <Bar dataKey="학사" stackId="a" fill="#3B82F6" name="학사" radius={[0, 0, 0, 0]} />
+          <Bar dataKey="석사" stackId="a" fill="#10B981" name="석사" radius={[0, 0, 0, 0]} />
+          <Bar dataKey="박사" stackId="a" fill="#F59E0B" name="박사" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -33,8 +33,7 @@ export const PublicationChart: React.FC<PublicationChartProps> = ({
 }) => {
   if (loading) {
     return (
-      <div data-testid="loading-skeleton" className="animate-pulse bg-gray-200 h-64 rounded">
-        Loading...
+      <div data-testid="loading-skeleton" className="skeleton-shimmer h-96 rounded-xl">
       </div>
     );
   }
@@ -63,8 +62,8 @@ export const PublicationChart: React.FC<PublicationChartProps> = ({
   }));
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold mb-4">논문 실적</h3>
+    <div className="bg-white p-6 rounded-xl shadow-xl hover-scale">
+      <h3 className="text-lg font-semibold mb-4 text-gray-900">논문 실적</h3>
       <ResponsiveContainer width="100%" height={400}>
         <PieChart>
           <Pie
@@ -72,16 +71,27 @@ export const PublicationChart: React.FC<PublicationChartProps> = ({
             cx="50%"
             cy="50%"
             innerRadius={60}
-            outerRadius={120}
+            outerRadius={130}
             fill="#8884d8"
             dataKey="value"
             label={(entry) => `${entry.name}: ${entry.percentage.toFixed(1)}%`}
+            labelLine={{ stroke: '#9CA3AF', strokeWidth: 1 }}
           >
             {chartData.map((entry) => (
-              <Cell key={`cell-${entry.name}`} fill={COLORS[entry.name as keyof typeof COLORS] || '#999'} />
+              <Cell
+                key={`cell-${entry.name}`}
+                fill={COLORS[entry.name as keyof typeof COLORS] || '#999'}
+              />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#fff',
+              border: 'none',
+              borderRadius: '0.5rem',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+            }}
+          />
           <Legend />
         </PieChart>
       </ResponsiveContainer>

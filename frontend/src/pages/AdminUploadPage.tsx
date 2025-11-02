@@ -94,7 +94,7 @@ const AdminUploadPage: React.FC = () => {
 
   return (
     <main className="admin-upload-page">
-      <h1>데이터 업로드</h1>
+      <h1 className="text-gray-900">데이터 업로드</h1>
 
       {/* Upload Form - shown when no job is running */}
       {!jobId && (

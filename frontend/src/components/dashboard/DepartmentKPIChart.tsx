@@ -29,8 +29,7 @@ export const DepartmentKPIChart: React.FC<DepartmentKPIChartProps> = ({
 }) => {
   if (loading) {
     return (
-      <div data-testid="loading-skeleton" className="animate-pulse bg-gray-200 h-64 rounded">
-        Loading...
+      <div data-testid="loading-skeleton" className="skeleton-shimmer h-96 rounded-xl">
       </div>
     );
   }
@@ -59,31 +58,45 @@ export const DepartmentKPIChart: React.FC<DepartmentKPIChartProps> = ({
   }));
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow">
-      <h3 className="text-lg font-semibold mb-4">학과 KPI 추이</h3>
+    <div className="bg-white p-6 rounded-xl shadow-xl hover-scale">
+      <h3 className="text-lg font-semibold mb-4 text-gray-900">학과 KPI 추이</h3>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="year" label={{ value: '년도', position: 'insideBottom', offset: -5 }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" opacity={0.5} />
+          <XAxis
+            dataKey="year"
+            label={{ value: '년도', position: 'insideBottom', offset: -5 }}
+            tick={{ fontSize: 12 }}
+          />
           <YAxis
             yAxisId="left"
             label={{ value: '취업률 (%)', angle: -90, position: 'insideLeft' }}
             domain={[0, 100]}
+            tick={{ fontSize: 12 }}
           />
           <YAxis
             yAxisId="right"
             orientation="right"
             label={{ value: '기술이전 (억원)', angle: 90, position: 'insideRight' }}
+            tick={{ fontSize: 12 }}
           />
-          <Tooltip />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#fff',
+              border: 'none',
+              borderRadius: '0.5rem',
+              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+            }}
+          />
           <Legend />
           <Line
             yAxisId="left"
             type="monotone"
             dataKey="취업률"
             stroke="#3B82F6"
-            strokeWidth={2}
-            dot={{ r: 4 }}
+            strokeWidth={3}
+            dot={{ r: 5, fill: '#3B82F6' }}
+            activeDot={{ r: 7 }}
             name="평균 취업률 (%)"
           />
           <Line
@@ -91,9 +104,10 @@ export const DepartmentKPIChart: React.FC<DepartmentKPIChartProps> = ({
             type="monotone"
             dataKey="기술이전"
             stroke="#F59E0B"
-            strokeWidth={2}
+            strokeWidth={3}
             strokeDasharray="5 5"
-            dot={{ r: 4 }}
+            dot={{ r: 5, fill: '#F59E0B' }}
+            activeDot={{ r: 7 }}
             name="기술이전 수입 (억원)"
           />
         </LineChart>

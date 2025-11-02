@@ -119,6 +119,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Security settings for production
 if not DEBUG:
+    # Railway uses X-Forwarded-Proto header - trust it to avoid redirect loops
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 31536000  # 1 year
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True

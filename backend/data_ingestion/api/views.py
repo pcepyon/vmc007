@@ -124,9 +124,9 @@ class StatusViewSet(viewsets.ViewSet):
         """
         job_id = pk
         job_store = get_job_store()
-        job_data = job_store.get(job_id)
+        job_info = job_store.get_job(job_id)
 
-        if job_data is None:
+        if job_info is None:
             return Response(
                 {
                     'error': 'not_found',
@@ -134,6 +134,14 @@ class StatusViewSet(viewsets.ViewSet):
                 },
                 status=status.HTTP_404_NOT_FOUND
             )
+
+        # Convert JobInfo to dict for serialization
+        job_data = {
+            'job_id': job_info.job_id,
+            'status': job_info.status.value,
+            'progress': job_info.progress,
+            'total': job_info.total
+        }
 
         # Serialize response
         serializer = JobStatusSerializer(data=job_data)

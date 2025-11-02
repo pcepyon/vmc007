@@ -5,8 +5,12 @@ Minimal configuration for MVP with testing support.
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file
+load_dotenv(dotenv_path=BASE_DIR / '.env')
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-mvp-dev-key-change-in-production')
 

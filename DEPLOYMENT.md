@@ -101,6 +101,15 @@ CORS_ALLOWED_ORIGINS = [
 - 루트 디렉토리에 `requirements.txt` 파일이 있어야 함 (프로젝트에 이미 포함됨)
 - Railway가 자동으로 Python 프로젝트로 감지하여 pip 설치
 
+### libmagic 오류 (ImportError: failed to find libmagic)
+**원인**: `python-magic` 패키지가 시스템 라이브러리 `libmagic`에 의존
+
+**해결**:
+- `nixpacks.toml`에 `libmagic1`, `libmagic-dev`, `file` 패키지 추가됨
+- 파일 업로드 시 MIME 타입 검증을 위해 필수
+
+**참고**: `python-magic`은 보안을 위해 필수입니다 (악성 파일 업로드 방지)
+
 ### 정적 파일 404 에러
 **자동 실행**: `railway.json`의 `buildCommand`에서 자동으로 `collectstatic` 실행
 
@@ -127,6 +136,7 @@ cd backend && python manage.py collectstatic --noinput
 
 - `Procfile`: Railway 시작 명령 + 자동 마이그레이션
 - `railway.json`: Railway 배포 설정 + collectstatic 자동 실행
+- `nixpacks.toml`: 시스템 패키지 설정 (libmagic 등)
 - `requirements.txt` (루트): Python 프로젝트 자동 감지용
 - `backend/requirements.txt`: Python 의존성 목록
 - `backend/data_ingestion/wsgi.py`: WSGI 애플리케이션 진입점

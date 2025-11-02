@@ -6,6 +6,12 @@
 2. Supabase 프로젝트 생성 (https://supabase.com)
 3. GitHub 저장소 연결
 
+## 배포 방식
+
+이 프로젝트는 **Dockerfile 기반 배포**를 사용합니다.
+
+**이유**: `python-magic` 패키지가 시스템 라이브러리 `libmagic`에 의존하는데, Railway Nixpacks로는 안정적인 설치가 어려워 Dockerfile을 사용합니다.
+
 ## Railway 배포 단계
 
 ### 1. 백엔드 배포
@@ -13,6 +19,7 @@
 1. Railway 대시보드에서 "New Project" 클릭
 2. "Deploy from GitHub repo" 선택
 3. 저장소 선택 후 "Deploy Now" 클릭
+4. Railway가 자동으로 Dockerfile을 감지하여 빌드
 
 ### 2. 환경 변수 설정
 
@@ -45,13 +52,15 @@ FRONTEND_URL=https://<your-frontend-domain>.vercel.app
 
 ### 3. 데이터베이스 마이그레이션
 
-**자동 마이그레이션**: Procfile에 `release` 단계가 설정되어 있어 배포 시 자동으로 마이그레이션이 실행됩니다.
+**자동 마이그레이션**: Dockerfile의 `CMD`에서 시작 시 자동으로 마이그레이션이 실행됩니다.
 
 수동으로 실행하려면 Railway 대시보드 터미널에서:
 
 ```bash
 cd backend && python manage.py migrate
 ```
+
+**참고**: Dockerfile 기반 배포에서는 Procfile의 `release` 단계가 사용되지 않습니다.
 
 ### 4. 프론트엔드 배포 (옵션 1: Vercel)
 
@@ -104,19 +113,22 @@ CORS_ALLOWED_ORIGINS = [
 ### libmagic 오류 (ImportError: failed to find libmagic)
 **원인**: `python-magic` 패키지가 시스템 라이브러리 `libmagic`에 의존
 
-**해결**:
-- `nixpacks.toml`에 `libmagic1`, `libmagic-dev`, `file` 패키지 추가됨
+**해결**: Dockerfile 기반 배포로 전환
+- Nixpacks로는 `libmagic` 설치가 불안정함 (Railway 커뮤니티 권장사항)
+- Dockerfile에서 `apt-get install libmagic1 libmagic-dev file`로 명시적 설치
 - 파일 업로드 시 MIME 타입 검증을 위해 필수
 
 **참고**: `python-magic`은 보안을 위해 필수입니다 (악성 파일 업로드 방지)
 
 ### 정적 파일 404 에러
-**자동 실행**: `railway.json`의 `buildCommand`에서 자동으로 `collectstatic` 실행
+**자동 실행**: Dockerfile의 `RUN` 단계에서 빌드 시 자동으로 `collectstatic` 실행
 
 수동 실행:
 ```bash
 cd backend && python manage.py collectstatic --noinput
 ```
+
+**참고**: Dockerfile 배포에서는 `railway.json`의 `buildCommand`가 사용되지 않습니다.
 
 ### 데이터베이스 연결 오류
 - Supabase 데이터베이스 접속 정보 확인
@@ -134,9 +146,20 @@ cd backend && python manage.py collectstatic --noinput
 
 ## 주요 파일
 
-- `Procfile`: Railway 시작 명령 + 자동 마이그레이션
-- `railway.json`: Railway 배포 설정 + collectstatic 자동 실행
-- `nixpacks.toml`: 시스템 패키지 설정 (libmagic 등)
+### 배포 관련 (Dockerfile 기반)
+- **`Dockerfile`**: Railway 배포 설정 (메인)
+  - libmagic 시스템 패키지 설치
+  - Python 의존성 설치
+  - collectstatic 자동 실행
+  - 마이그레이션 + Gunicorn 서버 시작
+- **`.dockerignore`**: Docker 이미지 최적화 (불필요한 파일 제외)
+
+### 레거시 파일 (Dockerfile 사용 시 무시됨)
+- `Procfile`: Nixpacks 전용 (Dockerfile 있으면 사용 안됨)
+- `railway.json`: Nixpacks 전용
+- `nixpacks.toml`: Nixpacks 시스템 패키지 설정 (참고용)
+
+### 기타
 - `requirements.txt` (루트): Python 프로젝트 자동 감지용
 - `backend/requirements.txt`: Python 의존성 목록
 - `backend/data_ingestion/wsgi.py`: WSGI 애플리케이션 진입점

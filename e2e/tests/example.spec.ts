@@ -13,8 +13,8 @@ test.describe('Dashboard E2E Tests', () => {
     // Act: Wait for page to load
     await page.waitForLoadState('networkidle');
 
-    // Assert: Page title should be present
-    await expect(page).toHaveTitle(/Dashboard|University/i);
+    // Assert: Page title should be present (supports Korean title)
+    await expect(page).toHaveTitle(/대학교|Dashboard|University/i);
   });
 
   test('should display metric cards on dashboard', async ({ page }) => {

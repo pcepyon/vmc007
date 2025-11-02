@@ -4,12 +4,12 @@
  * Compatible with both Vite (production) and Jest (testing)
  */
 
-// Simple approach: always use process.env for consistency
+// Use import.meta.env for Vite (browser) environment
 // Vite will inject these at build time
 export const ENV = {
-  API_BASE_URL: process.env.VITE_API_BASE_URL || 'http://localhost:8000',
-  ADMIN_MODE: process.env.VITE_ADMIN_MODE === 'true',
-  ADMIN_API_KEY: process.env.VITE_ADMIN_API_KEY || '',
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+  ADMIN_MODE: import.meta.env.VITE_ADMIN_MODE === 'true',
+  ADMIN_API_KEY: import.meta.env.VITE_ADMIN_API_KEY || '',
 };
 
 /**

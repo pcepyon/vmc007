@@ -59,7 +59,6 @@ yarn.lock
 .env.test.local
 .env.production.local
 *.env
-.env.example
 
 # IDE
 .vscode/

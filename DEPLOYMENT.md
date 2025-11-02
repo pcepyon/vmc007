@@ -12,6 +12,17 @@
 
 **이유**: `python-magic` 패키지가 시스템 라이브러리 `libmagic`에 의존하는데, Railway Nixpacks로는 안정적인 설치가 어려워 Dockerfile을 사용합니다.
 
+## Railway 내부 네트워킹
+
+Railway는 **Private Networking**을 제공합니다:
+- 서비스 주소: `<service-name>.railway.internal`
+- 예: `vmc007.railway.internal`
+- **장점**:
+  - 더 빠른 통신 (내부 네트워크)
+  - 외부 인터넷을 거치지 않음
+  - 대역폭 절약
+  - 보안 강화 (내부 트래픽)
+
 ## Railway 배포 단계
 
 ### 1. 백엔드 배포
@@ -42,7 +53,11 @@ DB_PORT=5432
 ADMIN_API_KEY=<강력한 관리자 API 키 생성>
 
 # CORS (프론트엔드 배포 후 추가)
-FRONTEND_URL=https://<your-frontend-domain>.vercel.app
+# 옵션 1: Railway 내부 네트워킹 (권장 - 더 빠름)
+FRONTEND_URL=https://vmc007-frontend.railway.internal
+
+# 옵션 2: 공개 도메인 (외부 접근 필요 시)
+# FRONTEND_URL=https://<your-frontend-domain>.up.railway.app
 ```
 
 **주의**:
@@ -62,43 +77,109 @@ cd backend && python manage.py migrate
 
 **참고**: Dockerfile 기반 배포에서는 Procfile의 `release` 단계가 사용되지 않습니다.
 
-### 4. 프론트엔드 배포 (옵션 1: Vercel)
+### 4. 프론트엔드 배포 (Railway)
 
-1. Vercel 계정 생성 (https://vercel.com)
-2. GitHub 저장소 연결
-3. Root Directory를 `frontend`로 설정
-4. Framework Preset: Vite
-5. 환경 변수 설정:
+1. Railway 대시보드에서 "New Project" 클릭
+2. "Deploy from GitHub repo" 선택 (같은 저장소 사용 가능)
+3. 프로젝트 생성 후 Settings로 이동
 
+#### 4.1. Root Directory 설정
+- Settings → "Root Directory" → `frontend` 입력
+- 이렇게 하면 frontend 폴더만 독립적으로 배포됨
+
+#### 4.2. Build & Start 명령 설정
+Railway Settings → Deploy에서 다음 설정:
+
+**Build Command:**
+```bash
+npm install && npm run build
 ```
-VITE_API_BASE_URL=https://<your-railway-domain>.railway.app
+
+**Start Command (옵션 1 - serve 사용):**
+```bash
+npx serve@latest -s dist -l $PORT
+```
+
+**Start Command (옵션 2 - Vite preview):**
+```bash
+npm run preview -- --port $PORT --host 0.0.0.0
+```
+
+**권장**: serve 사용 (더 안정적)
+
+#### 4.3. 환경 변수 설정 (Variables 탭)
+```bash
+# 옵션 1: Railway 내부 네트워킹 (권장)
+VITE_API_BASE_URL=https://vmc007.railway.internal
+
+# 옵션 2: 공개 도메인 (개발/테스트 시)
+# VITE_API_BASE_URL=https://<backend-domain>.up.railway.app
+
 VITE_ADMIN_MODE=true
-VITE_ADMIN_API_KEY=<railway에서 설정한 ADMIN_API_KEY와 동일>
+VITE_ADMIN_API_KEY=<백엔드에서 설정한 ADMIN_API_KEY와 동일>
 ```
 
-### 5. 프론트엔드 배포 (옵션 2: Railway Static Site)
+**참고**:
+- 백엔드와 프론트엔드는 별도 Railway 서비스로 배포
+- 같은 GitHub 저장소를 두 번 배포 (Root Directory로 구분)
+- **내부 네트워킹**: 같은 Railway 프로젝트 내 서비스끼리는 `.railway.internal` 주소로 통신
+- **공개 도메인**: 브라우저에서 직접 접근해야 하는 경우 `.up.railway.app` 사용
 
-1. 프론트엔드용 별도 Railway 프로젝트 생성
-2. Build Command: `cd frontend && npm install && npm run build`
-3. Start Command: `npx serve -s frontend/dist -l $PORT`
-4. 환경 변수 동일하게 설정
+### 5. CORS 설정 업데이트
 
-### 6. CORS 설정 업데이트
+백엔드 Railway 환경 변수에 `FRONTEND_URL` 추가:
 
-백엔드의 `data_ingestion/settings.py`에서 CORS 설정 업데이트:
+```bash
+# 내부 네트워킹 사용 시
+FRONTEND_URL=https://vmc007-frontend.railway.internal
 
-```python
-CORS_ALLOWED_ORIGINS = [
-    'https://<your-frontend-domain>.vercel.app',  # Vercel
-    # or
-    'https://<your-frontend-domain>.railway.app',  # Railway
-]
+# 또는 공개 도메인 사용 시
+# FRONTEND_URL=https://<frontend-domain>.up.railway.app
 ```
+
+**자동 적용**: `settings.py`가 환경 변수 `FRONTEND_URL`을 읽어서 CORS 설정에 자동 추가합니다.
+
+**중요**: 브라우저는 `.railway.internal` 주소에 직접 접근할 수 없으므로, 실제로는 프론트엔드의 공개 도메인을 CORS에 추가해야 합니다.
+
+## Railway 네트워킹 이해하기
+
+### Private Networking (`.railway.internal`)
+**사용 시나리오**: 서버 간 통신 (서비스 to 서비스)
+- ✅ 백엔드 → 데이터베이스
+- ✅ 프론트엔드 SSR → 백엔드 API
+- ✅ 마이크로서비스 간 통신
+- ❌ 브라우저 → 백엔드 (브라우저는 접근 불가)
+
+**장점**:
+- 더 빠른 속도 (내부 네트워크)
+- 외부 대역폭 사용 안함
+- 추가 비용 없음
+
+### Public Domain (`.up.railway.app`)
+**사용 시나리오**: 외부 접근 (브라우저, 외부 API 등)
+- ✅ 브라우저 → 백엔드 API
+- ✅ 브라우저 → 프론트엔드
+- ✅ 외부 웹훅, 써드파티 서비스
+
+**이 프로젝트의 네트워킹 구성**:
+```
+브라우저
+  │
+  ├─→ https://vmc007-frontend.up.railway.app (공개)
+  │     │
+  │     └─→ https://vmc007.railway.internal (내부) ← 프론트엔드 → 백엔드
+  │
+  └─→ https://vmc007.up.railway.app (공개, 직접 API 호출 시)
+```
+
+**권장 설정**:
+1. **프론트엔드 → 백엔드**: `.railway.internal` 사용 (더 빠름)
+2. **CORS 설정**: 프론트엔드 공개 도메인 추가 (브라우저 Origin 용)
 
 ## 배포 확인
 
-1. Railway 백엔드 URL 접속: `https://<railway-domain>.railway.app/api/health`
-2. 프론트엔드 접속하여 대시보드 확인
+1. Railway 백엔드 URL 접속: `https://vmc007.up.railway.app/api/health`
+2. 프론트엔드 접속하여 대시보드 확인: `https://vmc007-frontend.up.railway.app`
 3. 파일 업로드 기능 테스트
 
 ## 문제 해결
